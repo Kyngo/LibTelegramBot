@@ -31,11 +31,11 @@ class TelegramBot {
 		$res = curl_exec($ch);
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		if ($http_code != 200) { 
-			die(json_encode(["error" => "server returned an error", "response" => $res]));
+			return ["error" => "server returned an error", "response" => $res];
 		}
 		// cierra la conexion
 		curl_close($ch);
-		return $res;
+		return json_decode($res);
 	}
 
 	public function parseUpdate($update) {
@@ -45,7 +45,7 @@ class TelegramBot {
 		} catch (Exception $e) {
 			showError("an exception ocurred: " . $e);
 		}
-		return $data;
+		return $data['message'];
 	}
 
 	// GetMe
@@ -83,6 +83,7 @@ class TelegramBot {
 		return $this->sendRequest("forwardMessage", $params);
 	}
 
+	// Multimedia
 	public function sendPhoto($params) {
 		return $this->sendRequest("sendPhoto", $params);
 	}
@@ -111,8 +112,27 @@ class TelegramBot {
 		return $this->sendRequest("sendMediaGroup", $params);
 	}
 
+	// Ubicación
 	public function sendLocation($params) {
 		return $this->sendRequest("sendLocation", $params);
+	}
+
+	public function editMessageLiveLocation($params) {
+		return $this->sendRequest("editMessageLiveLocation", $params);
+	}
+
+	public function stopMessageLiveLocation($params) {
+		return $this->sendRequest("stopMessageLiveLocation", $params);
+	}
+
+	// Pagos
+	public function sendVenue($params) {
+		return $this->sendRequest("sendVenue", $params);
+	}
+
+	// Contactos
+	public function sendContact($params) {
+		return $this->sendRequest("sendContact", $params);
 	}
 }
 
