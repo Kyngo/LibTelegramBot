@@ -29,23 +29,49 @@ class TelegramBot {
 		]);
 		// ejecuta la conexion
 		$res = curl_exec($ch);
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		if ($http_code != 200) { 
-			return ["error" => "server returned an error", "response" => $res];
-		}
 		// cierra la conexion
 		curl_close($ch);
 		return json_decode($res);
 	}
 
 	public function parseUpdate($update) {
-		$data;
-		try {
-			$data = json_decode($update);
-		} catch (Exception $e) {
-			showError("an exception ocurred: " . $e);
+		// ips de los servers de telegram
+		$telegram_ip_lower = '149.154.167.197';
+		$telegram_ip_upper = '149.154.167.233';
+
+		// comprobacion de la ip de origen
+		$ip = $_SERVER['REMOTE_ADDR'];
+		foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR'] as $key) {
+		    $addr = @$_SERVER[$key];
+		    if (filter_var($addr, FILTER_VALIDATE_IP)) {
+		        $ip = $addr;
+		    }
 		}
-		return $data['message'];
+
+		// cotejemos la ip obtenida con las direcciones de confianza
+		$lower_dec = (float) sprintf("%u", ip2long($telegram_ip_lower));
+		$upper_dec = (float) sprintf("%u", ip2long($telegram_ip_upper));
+		$ip_dec    = (float) sprintf("%u", ip2long($ip));
+		// si no coincide, lo matamos
+		if ($ip_dec < $lower_dec || $ip_dec > $upper_dec) {
+			header("HTTP/1.1 403 Forbidden");
+			header("Content-Type: text/html");
+		    echo "<h1>403 Forbidden</h1>";
+		}
+		// si coincide, parseamos la update
+		if ($update != "") {
+			$data;
+			try {
+				$data = json_decode($update, true);
+			} catch (Exception $e) {
+				showError("libtelegrambot had an exception: " . $e);
+			}
+			header("HTTP/1.1 200 OK");
+			return $data['message'];	
+		} else {
+			$this->showError("meh");
+		}
+		
 	}
 
 	// GetMe
