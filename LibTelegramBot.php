@@ -39,7 +39,7 @@ class TelegramBot {
 	}
 
 	public function parseUpdate($update) {
-		private $data;
+		$data;
 		try {
 			$data = json_decode($update);
 		} catch (Exception $e) {
