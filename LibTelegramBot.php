@@ -38,6 +38,16 @@ class TelegramBot {
 		return $res;
 	}
 
+	public function parseUpdate($update) {
+		private $data;
+		try {
+			$data = json_decode($update);
+		} catch (Exception $e) {
+			showError("an exception ocurred: " . $e);
+		}
+		return $data;
+	}
+
 	// GetMe
 	public function getMe() {
 		return $this->sendRequest("getMe", []);
