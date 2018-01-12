@@ -16,11 +16,22 @@ class TelegramBot {
 		$this->base_url .= $token . '/';
 	}
 
+	// gestión del token
+	public function getToken() {
+		return $this->token;
+	}
+
+	public function setToken($token) {
+		$this->token = $token;
+	}
+
+	// función de finalización del programa
 	private function showError($msg) {
 		die(json_encode(["error" => $msg]));
 	}
 
-	private function sendRequest($function, $params) {
+	// sender
+	public function sendRequest($function, $params) {
 		$ch = curl_init();
 		curl_setopt_array($ch, [
 			CURLOPT_URL => $this->base_url . $function,
@@ -34,6 +45,7 @@ class TelegramBot {
 		return json_decode($res);
 	}
 
+	// receiver
 	public function parseUpdate($update) {
 		// ips de los servers de telegram
 		$telegram_ip_lower = '149.154.167.197';
@@ -73,6 +85,12 @@ class TelegramBot {
 		}
 		
 	}
+
+	/*
+	 * ==================================================
+	 * + FUNCIONES DE ABREVIACIÓN DE LA API DE TELEGRAM +
+	 * ==================================================
+	 */
 
 	// GetMe
 	public function getMe() {
@@ -159,6 +177,66 @@ class TelegramBot {
 	// Contactos
 	public function sendContact($params) {
 		return $this->sendRequest("sendContact", $params);
+	}
+
+	// Acciones
+	public function sendChatAction($params) {
+		return $this->sendRequest("sendChatAction", $params);
+	}
+
+	// Fotos de perfil de alguien
+	public function getUserProfilePhotos($params) {
+		return $this->sendRequest("getUserProfilePhotos", $params);
+	}
+
+	// Obtener un fichero
+	public function getFile($params) {
+		return $this->sendRequest("getFile", $params);
+	}
+
+	// Administración de grupos
+	public function kickChatMember($params) {
+		return $this->sendRequest("kickChatMember", $params);
+	}
+
+	public function unbanChatMember($params) {
+		return $this->sendRequest("unbanChatMember", $params);
+	}
+
+	public function restrictChatMember($params) {
+		return $this->sendRequest("restrictChatMember", $params);
+	}
+
+	public function promoteChatMember($params) {
+		return $this->sendRequest("promoteChatMember", $params);
+	}
+
+	public function exportChatInviteLink($params) {
+		return $this->sendRequest("exportChatInviteLink", $params);
+	}
+
+	public function setChatPhoto($params) {
+		return $this->sendRequest("setChatPhoto", $params);
+	}
+
+	public function deleteChatPhoto($params) {
+		return $this->sendRequest("deleteChatPhoto", $params);
+	}
+
+	public function setChatTitle($params) {
+		return $this->sendRequest("setChatTitle", $params);
+	}
+
+	public function setChatDescription($params) {
+		return $this->sendRequest("setChatDescription", $params);
+	}
+
+	public function pinChatMessage($params) {
+		return $this->sendRequest("pinChatMessage", $params);
+	}
+
+	public function unpinChatMessage($params) {
+		return $this->sendRequest("unpinChatMessage", $params);
 	}
 }
 
