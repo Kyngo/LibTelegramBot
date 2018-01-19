@@ -179,6 +179,11 @@ class TelegramBot {
 		return $this->sendRequest("sendContact", $params);
 	}
 
+	// Eliminar mensajes
+	public function deleteMessage($params) {
+		return $this->sendRequest("deleteMessage", $params);
+	}
+
 	// Acciones
 	public function sendChatAction($params) {
 		return $this->sendRequest("sendChatAction", $params);
